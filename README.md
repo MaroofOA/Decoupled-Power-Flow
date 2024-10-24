@@ -1,6 +1,6 @@
-# Fast-Decoupled Power Flow Algorithm
+# Decoupled Power Flow Algorithm
 
-This repository contains implementations of the **Fast-Decoupled Power Flow** algorithm for performing power flow analysis on distribution or transmission systems in both MATLAB and Python. The Fast-Decoupled method is an efficient and simplified version of the Newton-Raphson method, suitable for large power systems. The code can be used for any system model, provided that the input data adheres to the specified format.
+This repository contains implementations of the **Decoupled Power Flow** algorithm for performing power flow analysis on distribution or transmission systems in both MATLAB and Python. The Decoupled Power Flow (DPF) method is a simplified version of the Newton-Raphson method, suitable for large power systems. The code can be used for any system model, provided that the input data adheres to the specified format.
 
 ## Overview
 
@@ -15,11 +15,20 @@ The function includes the following features:
   
 - **Customizable Parameters**: Users can specify a constant slack bus voltage, a convergence tolerance for iteration, and a maximum number of iterations allowed for the calculations. Default values are provided but can be overridden when calling the function.
 
-- **Fast-Decoupled Approach**: The method leverages the decoupling between active power (P) and voltage angles (θ), and reactive power (Q) and voltage magnitudes (|V|), which reduces the size of the Jacobian matrix and speeds up computation.
+- **Decoupled Power Flow Approach**: The method leverages the decoupling between active power (P) and voltage angles (θ), and reactive power (Q) and voltage magnitudes (|V|). The decoupled Jacobian matrix allows for faster computation.
 
-### General Assumptions for Fast-Decoupled Power Flow
+### General Assumptions for Decoupled Power Flow
 
 - **Decoupled Power Flow Equations**: The power flow equations are simplified by assuming that the variations in real power (P) primarily affect the voltage angles (θ), and the variations in reactive power (Q) primarily affect the voltage magnitudes (|V|).
+
+- **Assumptions in the Jacobian Matrix**: The method assumes that:
+  - \( J_2 = 0 \): Real power \( P \) has negligible dependence on voltage magnitudes \( |V| \).
+  - \( J_3 = 0 \): Reactive power \( Q \) has negligible dependence on voltage angles \( \theta \).
+
+This assumption leads to the following simplified Jacobian matrix:
+
+
+This greatly simplifies the computational process, speeding up the solution.
 
 - **Flat Start Initialization**: Typically, the initial guess for voltage magnitudes is set to 1.0 p.u. for non-slack buses, and the voltage angle at the slack bus is set to 0 radians.
 
@@ -30,27 +39,27 @@ The function includes the following features:
 ### Guidance for Use
 
 1. **Input Format**: Ensure that the input data (i.e., load and line data) are formatted correctly:
-   - **Load Data**: 
-     - Column 1: Bus index
-     - Column 2: Real power (P)
-     - Column 3: Reactive power (Q)
-   - **Line Data**: 
-     - Column 1: Sending bus index
-     - Column 2: Receiving bus index
-     - Column 3: Line resistance (R)
-     - Column 4: Line reactance (X)
+ - **Load Data**: 
+   - Column 1: Bus index
+   - Column 2: Real power (P)
+   - Column 3: Reactive power (Q)
+ - **Line Data**: 
+   - Column 1: Sending bus index
+   - Column 2: Receiving bus index
+   - Column 3: Line resistance (R)
+   - Column 4: Line reactance (X)
 
 2. **Function Call**: To execute the function, you can provide the load and line data as arguments, along with optional parameters for slack bus voltage, tolerance, and maximum iterations. If you skip any of the optional parameters, the function will use the predefined default values.
 
 3. **Example Usage**:
-   - **Python**:
-     ```python
-     v, iteration = fast_decoupled_power_flow(load_data, line_data, slack_bus_voltage=1.05, tolerance=1e-4)
-     ```
-   - **MATLAB**:
-     ```matlab
-     [v, iteration] = fast_decoupled_power_flow(load_data, line_data, 1.05, 1e-4);
-     ```
+ - **Python**:
+   ```python
+   v, iteration = dpf_method(load_data, line_data, slack_bus_voltage=1.05, tolerance=1e-4)
+   ```
+ - **MATLAB**:
+   ```matlab
+   [v, iteration] = dpf_method(load_data, line_data, 1.05, 1e-4);
+   ```
 
 4. **Exiting the Function**: Users are prompted to press Enter to continue or type 'quit' to exit the function. This allows for flexibility in how users interact with the function.
 
@@ -72,5 +81,5 @@ This provides a comprehensive tool for conducting power flow analysis in distrib
 
 ## Files
 
-- `fdpf_method.py`: Python code for the Fast-Decoupled Power Flow method for power flow analysis.
-- `fdpf_method.m`: MATLAB code for the Fast-Decoupled Power Flow method for power flow analysis.
+- `dpf_method.py`: Python code for the Decoupled Power Flow method for power flow analysis.
+- `dpf_method.m`: MATLAB code for the Decoupled Power Flow method for power flow analysis.
